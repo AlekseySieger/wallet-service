@@ -2,6 +2,8 @@ package service;
 
 import exception.CommonException;
 import exception.GlobalExceptionHandler;
+import exception.InsufficientFundsException;
+import exception.WalletNotFoundException;
 import model.Wallet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,7 @@ public class WalletService {
 
         if (operationType.equals("WITHDRAW")) {
             if (wallet.getBalance() < amount) {
-                throw new RuntimeException("Insufficient funds");
+                throw new InsufficientFundsException("Insufficient funds");
             }
             wallet.setBalance(wallet.getBalance() - amount);
         } else if (operationType.equals("DEPOSIT")) {
@@ -37,7 +39,7 @@ public class WalletService {
 
     public Wallet getBalance(UUID walletId) {
         return walletRepository.findById(walletId)
-                .orElseThrow(() -> new RuntimeException("Wallet not found"));
+                .orElseThrow(() -> new WalletNotFoundException("Wallet not found"));
     }
 
     public void create(long balance) {
